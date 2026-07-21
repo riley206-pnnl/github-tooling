@@ -1,52 +1,49 @@
+# VOLTTRON
+VOLTTRON™ is an open source platform for distributed sensing and control.
+The platform provides services for collecting and storing data from buildings and devices and provides an
+environment for developing applications which interact with that data.
 
-VOLTTRON™ is an open source platform for distributed sensing and control. The platform provides services for collecting and storing data from buildings and devices and provides an environment for developing applications which interact with that data.
-## volttron-core
+## github tools
+This repository contains github tools used by multiple volttron agent and library repositories
 
-[![pypi version](https://img.shields.io/pypi/v/volttron.svg)](https://pypi.org/project/volttron/)
-[![Run Pytests](https://github.com/eclipse-volttron/volttron-core/actions/workflows/run-tests.yml/badge.svg)](https://github.com/eclipse-volttron/volttron-core/actions/workflows/run-tests.yml)
+ - The folder .github/workflows contains reusable workflows used by workflows called by other volttron repositories
+ - The folder actions-all-repositories contains workflows that need to be present in all volttron agent and library
+   repositories and contains actions that does code analysis, testing, release etc. Some of these workflows simply set
+   the right project name, environment and call the reusable workflows in this repository's .github/workflow
+ - The tooling folder contains tools useful for other volttron repositories
 
-## volttron-testing
+## Propagating files to multiple repositories
 
-[![pypi version](https://img.shields.io/pypi/v/volttron-testing.svg)](https://pypi.org/project/volttron-testing/)
-[![Run Pytests develop](https://github.com/eclipse-volttron/volttron-testing/actions/workflows/run-tests.yml/badge.svg)](https://github.com/eclipse-volttron/volttron-testing/actions/workflows/run-tests.yml?query=branch%3Adevelop++)
+Whenever there is changes in workflows in actions-all-repositories folder, the changes need to be propagated to all
+the volttron agent and library repositories. Once changes to yml files under action-all-repositories are approved and
+merged into main branch of this repository, you can easily propagate the changes to other volttron repositories using
+the tool [multi-gitter](https://github.com/lindell/multi-gitter)
+Such propagation would also be needed files such as copyright and license that are there in every single eclipse-volttron repository
 
-## volttron-listener
+## Using multi-gitter
 
-[![pypi version](https://img.shields.io/pypi/v/volttron-listener.svg)](https://pypi.org/project/volttron-listener/)
-[![Run Pytests develop](https://github.com/eclipse-volttron/volttron-listener/actions/workflows/run-tests.yml/badge.svg)](https://github.com/eclipse-volttron/volttron-listener/actions/workflows/run-tests.yml?query=branch%3Adevelop++)
+The script tooling/propagate-github-actions.sh is used as input to the ```multi-gitter run ``` to repeat a set of actions
+across a set of matching repositories. The code can be simple copy a new file - say a new developer_notes.md or do some
+sed/awk magic to update files.
 
-## volttron-platform-driver
+To run the multi-gitter run command:
 
-[![pypi version](https://img.shields.io/pypi/v/volttron-platform-driver.svg)](https://pypi.org/project/volttron-platform-driver/)
-[![Run Pytests develop](https://github.com/eclipse-volttron/volttron-platform-driver/actions/workflows/run-tests.yml/badge.svg)](https://github.com/eclipse-volttron/volttron-platform-driver/actions/workflows/run-tests.yml?query=branch%3Adevelop++)
-
-## volttron-lib-base-driver
-
-[![pypi version](https://img.shields.io/pypi/v/volttron-lib-base-driver.svg)](https://pypi.org/project/volttron-lib-base-driver/)
-[![Run Pytests develop](https://github.com/eclipse-volttron/volttron-lib-base-driver/actions/workflows/run-tests.yml/badge.svg)](https://github.com/eclipse-volttron/volttron-lib-base-driver/actions/workflows/run-tests.yml?query=branch%3Adevelop++)
-
-## volttron-lib-fake-driver
-
-[![pypi version](https://img.shields.io/pypi/v/volttron-lib-fake-driver.svg)](https://pypi.org/project/volttron-lib-fake-driver/)
-[![Run Pytests develop](https://github.com/eclipse-volttron/volttron-lib-fake-driver/actions/workflows/run-tests.yml/badge.svg)](https://github.com/eclipse-volttron/volttron-lib-fake-driver/actions/workflows/run-tests.yml?query=branch%3Adevelop++)
-
-## volttron-lib-base-historian
-
-[![pypi version](https://img.shields.io/pypi/v/volttron-lib-base-historian.svg)](https://pypi.org/project/volttron-lib-base-historian/)
-[![Run Pytests develop](https://github.com/eclipse-volttron/volttron-lib-base-historian/actions/workflows/run-tests.yml/badge.svg)](https://github.com/eclipse-volttron/volttron-lib-base-historian/actions/workflows/run-tests.yml?query=branch%3Adevelop++)
-
-## volttron-lib-sql-historian
-
-[![pypi version](https://img.shields.io/pypi/v/volttron-lib-sql-historian.svg)](https://pypi.org/project/volttron-lib-sql-historian/)
-[![Run Pytests develop](https://github.com/eclipse-volttron/volttron-lib-sql-historian/actions/workflows/run-tests.yml/badge.svg)](https://github.com/eclipse-volttron/volttron-lib-sql-historian/actions/workflows/run-tests.yml?query=branch%3Adevelop++)
-
-## volttron-sqlite-historian
-
-[![pypi version](https://img.shields.io/pypi/v/volttron-sqlite-historian.svg)](https://pypi.org/project/volttron-sqlite-historian/)
-[![Run Pytests develop](https://github.com/eclipse-volttron/volttron-sqlite-historian/actions/workflows/run-tests.yml/badge.svg)](https://github.com/eclipse-volttron/volttron-sqlite-historian/actions/workflows/run-tests.yml?query=branch%3Adevelop++)
-
-## volttron-lib-web
-
-[![pypi version](https://img.shields.io/pypi/v/volttron-lib-web.svg)](https://pypi.org/project/volttron-lib-web/)
-[![Run Pytests develop](https://github.com/eclipse-volttron/volttron-lib-web/actions/workflows/run-tests.yml/badge.svg)](https://github.com/eclipse-volttron/volttron-lib-web/actions/workflows/run-tests.yml?query=branch%3Adevelop++)
-
+1. Clone this repository's main branch
+2. Set your github token as an environment variable GITHUB_TOKEN
+3. The tooling/multi-gitter-conf.yml is configured to look for specific repository, match repositories by regex or
+   hard coded list of repositories. For example to propagate update in action-all-repositories, you can match
+   volttron-* repos under eclipse-volttron with the exception
+    of volttron-docs and volttron-ansible. You can update this in the config file are pass corresponding command line
+    arguments to override the default configuration
+4. The config yml provide multiple configuation options to determine the user name for commit, commit message, if a new
+   PR should be created in all matching repos and if so what should be the name of the source branch etc. Please
+   read through all options carefully.
+5. The example configuration in tooling directory creates a PR with changes to the develop branch of all the volttron-* repositories
+6. Your script should always finally place the changed files in the correct directory assuming the files are in the cloned destination repository
+7. Always do a --dry-run first to verify
+5. Run the following command with correct absolute path to propagate-github-actions.sh
+   ```multi-gitter run 'bash /home/chandrika/modular-volttron/github-tooling/tooling/propagate-github-actions.sh' --dry-run --config tooling/multi-gitter-conf.yml```
+6. If the dry-run list the correct repositories and changes then repeat the command without --dry-run and PRs will get
+   created for all the matching repositories
+7. Repeat the command again if changes have to propagated to main branch or any other branch.
+   For this instead of updating the configuration file, you can send a additional  --base-branch option at command line
