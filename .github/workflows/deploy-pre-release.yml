@@ -201,13 +201,17 @@ jobs:
           npm install -g @cyclonedx/cdxgen
           pip install owasp-depscan
 
+      - name: Download vulnerability database
+        if: env.no_changes == 'false'
+        env:
+          VDB_APP_ONLY_DATABASE_URL: ghcr.io/appthreat/vdbxz-app-extended:v6.7.x
+        run: vdb --download-image
+
       - name: Generate SBOM and vulnerability report
         if: env.no_changes == 'false'
         run: |
           cdxgen -t python .
-          if ! depscan --bom bom.json; then
-            echo "depscan could not generate a vulnerability report; continuing with the SBOM."
-          fi
+          depscan --bom bom.json
           mkdir sbom-reports
           cp bom.json sbom-reports/
           for report in bom.vdr.json depscan-bom.json reports/*; do
