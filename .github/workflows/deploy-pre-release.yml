@@ -212,7 +212,7 @@ jobs:
         run: |
           cdxgen -t python .
           depscan --bom bom.json
-          mkdir sbom-reports
+          mkdir -p sbom-reports
           cp bom.json sbom-reports/
           for report in bom.vdr.json depscan-bom.json reports/*; do
             [[ -f "$report" ]] && cp "$report" sbom-reports/
