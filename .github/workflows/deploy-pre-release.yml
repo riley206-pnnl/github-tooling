@@ -187,6 +187,32 @@ jobs:
             echo "source branch is ${{ github.ref_name }}"
 
       # ----------------------------------------------
+      # Generate release security metadata
+      # ----------------------------------------------
+      - name: Set up Node.js
+        if: env.no_changes == 'false'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install SBOM tools
+        if: env.no_changes == 'false'
+        run: |
+          npm install -g @cyclonedx/cdxgen
+          pip install owasp-depscan
+
+      - name: Generate SBOM and vulnerability report
+        if: env.no_changes == 'false'
+        run: |
+          cdxgen -t python .
+          depscan --bom bom.json
+          mkdir sbom-reports
+          cp bom.json sbom-reports/
+          for report in bom.vdr.json depscan-bom.json reports/*; do
+            [[ -f "$report" ]] && cp "$report" sbom-reports/
+          done
+
+      # ----------------------------------------------
       # Auto commit toml file (only if version was bumped)
       # ----------------------------------------------
       - uses: stefanzweifel/git-auto-commit-action@v5
@@ -210,7 +236,7 @@ jobs:
         if: env.no_changes == 'false'
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "dist/*.gz,dist/*.whl"
+          artifacts: "dist/*.gz,dist/*.whl,sbom-reports/*"
           artifactErrorsFailBuild: true
           generateReleaseNotes: true
           commit: develop
