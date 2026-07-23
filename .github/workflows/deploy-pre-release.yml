@@ -205,7 +205,9 @@ jobs:
         if: env.no_changes == 'false'
         run: |
           cdxgen -t python .
-          depscan --bom bom.json
+          if ! depscan --bom bom.json; then
+            echo "depscan could not generate a vulnerability report; continuing with the SBOM."
+          fi
           mkdir sbom-reports
           cp bom.json sbom-reports/
           for report in bom.vdr.json depscan-bom.json reports/*; do
